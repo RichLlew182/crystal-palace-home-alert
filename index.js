@@ -1,4 +1,5 @@
 const dayjs = require('dayjs');
+const nodemailer = require('nodemailer');
 
 let todaysDate = dayjs()
 // console.log(todaysDate)
@@ -11,6 +12,34 @@ const options = {
 		'X-RapidAPI-Host': 'api-football-v1.p.rapidapi.com'
 	}
 };
+
+// Function to send alert email
+function sendAlertEmail(message) {
+  // Create a SMTP transporter
+  let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          user: 'richllewdesign@gmail.com', // Your email address
+          pass: 'ykhp nabm slnb vlht' // Your password
+      }
+  });
+
+  // Setup email data
+  let mailOptions = {
+      from: 'richllewdesign@gmail.com',
+      to: 'richard.lee.llewellyn@gmail.com',
+      subject: 'Crystal Palace are playing this week!',
+      text: message
+  };
+
+  // Send email
+  transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+          return console.log('Error occurred while sending email:', error);
+      }
+      console.log('Email sent:', info.response);
+  });
+}
 
 fetch(url, options)
   .then(function (result) {
@@ -41,12 +70,12 @@ fetch(url, options)
       
       if (daysFromNow < 7 && venue === 'Selhurst Park ') {
         console.log('FFS, Crystal Palace are playing at home this week. Sainsburys will be closed!');
-        sendAlertEmail();
+        sendAlertEmail('FFS, Crystal Palace are playing at home this week. Sainsburys will be closed!');
       }
        
       if (daysFromNow < 7 && venue !== 'Selhurst Park') {
         console.log('Crystal Palace are playing away this week, so Sainsburys should be open.')
-        sendAlertEmail();
+        sendAlertEmail('Crystal Palace are playing away this week, so Sainsburys should be open.');
       }
       
 
