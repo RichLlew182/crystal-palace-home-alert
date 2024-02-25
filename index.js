@@ -1,9 +1,4 @@
 const dayjs = require('dayjs');
-var relativeTime = require('dayjs/plugin/relativeTime')
-dayjs.extend(relativeTime)
-
-var timeFromNow = dayjs().to(dayjs('2024-02-29'))
-console.log(timeFromNow);
 
 let todaysDate = dayjs()
 // console.log(todaysDate)
@@ -33,12 +28,25 @@ fetch(url, options)
       const league = crystalPalaceFixtures[i].league.name;
       let futureDate = dayjs(crystalPalaceFixtures[i].fixture.date);
       let daysFromNow = futureDate.diff(todaysDate, 'day');
-      // let daysFromNow = futureDate.diff(dayjs(), 'days')
-      // console.log(daysFromNow)
+      console.log(daysFromNow)
+      futureDate = futureDate.format('DD/MM/YY')
+      
       
       console.log('------------------------------------------------------------')
-      console.log(`${homeTeam} are playing ${awayTeam} in the ${league} at ${venue} on ${futureDate} which is ${daysFromNow} days away.`)
-
+      // console.log(`${homeTeam} are playing ${awayTeam} in the ${league} at ${venue} on ${futureDate} which is ${daysFromNow} days away.`)
+      
+      if (daysFromNow < 7) {
+        console.log('Heads up, Crystal Palace are playing this week!')
+      }
+      
+      if (daysFromNow < 7 && venue === 'Selhurst Park ') {
+        console.log('FFS, Crystal Palace are playing at home this week. Sainsburys will be closed!')
+      }
+       
+      if (daysFromNow < 7 && venue !== 'Selhurst Park') {
+        console.log('Crystal Palace are playing away this week, so Sainsburys should be open.')
+      }
+      
 
     }
 
