@@ -1,4 +1,6 @@
-const url = 'https://api-football-v1.p.rapidapi.com/v3/fixtures?league=39&team=52&next=50&venue=525';
+const dayjs = require('dayjs')
+
+const url = 'https://api-football-v1.p.rapidapi.com/v3/fixtures?league=39&team=52&next=50';
 const options = {
 	method: 'GET',
 	headers: {
@@ -20,7 +22,9 @@ fetch(url, options)
       const venue = crystalPalaceFixtures[i].fixture.venue.name;
       const homeTeam = crystalPalaceFixtures[i].teams.home.name;
       const awayTeam = crystalPalaceFixtures[i].teams.away.name;
-      const date = crystalPalaceFixtures[i].fixture.date
+      let date = crystalPalaceFixtures[i].fixture.date
+      date = dayjs(date).format('DD/MM/YY')
+      console.log('------------------------------------------------------------')
       console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${date}`)
     }
 
