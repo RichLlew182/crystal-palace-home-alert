@@ -12,6 +12,18 @@ fetch(url, options)
     return result.json();
   }).then(function (data) {
 
-    console.log(data.response[0])
+    // console.log(data.response[0])
+
+    const crystalPalaceFixtures = data.response
+
+    for (let i = 0; i < crystalPalaceFixtures.length; i++) {
+      const venue = crystalPalaceFixtures[i].fixture.venue.name;
+      const homeTeam = crystalPalaceFixtures[i].teams.home.name;
+      const awayTeam = crystalPalaceFixtures[i].teams.away.name;
+      const date = crystalPalaceFixtures[i].fixture.date
+      console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${date}`)
+    }
+
+    
   })
 
