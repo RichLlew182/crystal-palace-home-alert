@@ -14,7 +14,7 @@ const options = {
 };
 
 // Function to send alert email
-function sendAlertEmail(message) {
+function sendAlertEmail(message, subject) {
   // Create a SMTP transporter
   let transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -26,9 +26,9 @@ function sendAlertEmail(message) {
 
   // Setup email data
   let mailOptions = {
-      from: 'richllewdesign@gmail.com',
+      from: 'Crystal Palace Alerts',
       to: 'richard.lee.llewellyn@gmail.com',
-      subject: 'Crystal Palace are playing this week!',
+      subject: subject,
       text: message
   };
 
@@ -37,7 +37,8 @@ function sendAlertEmail(message) {
       if (error) {
           return console.log('Error occurred while sending email:', error);
       }
-      console.log('Email sent:', info.response);
+    console.log('Email sent:', info.response);
+    console.log('------------------------------------------------------------')
   });
 }
 
@@ -50,32 +51,34 @@ fetch(url, options)
     const crystalPalaceFixtures = data.response
     
     for (let i = 0; i < crystalPalaceFixtures.length; i++) {
-      // console.log(data.response[i])
       const venue = crystalPalaceFixtures[i].fixture.venue.name;
       const homeTeam = crystalPalaceFixtures[i].teams.home.name;
       const awayTeam = crystalPalaceFixtures[i].teams.away.name;
       const league = crystalPalaceFixtures[i].league.name;
+      let fixtureDate = crystalPalaceFixtures[i].fixture.date;
+      fixtureDate = dayjs(fixtureDate).format('DD/MM/YY')
       let futureDate = dayjs(crystalPalaceFixtures[i].fixture.date);
       let daysFromNow = futureDate.diff(todaysDate, 'day');
-      console.log(daysFromNow)
+      // console.log(daysFromNow + ' days from now')
       futureDate = futureDate.format('DD/MM/YY')
       
-      
       console.log('------------------------------------------------------------')
-      // console.log(`${homeTeam} are playing ${awayTeam} in the ${league} at ${venue} on ${futureDate} which is ${daysFromNow} days away.`)
-      
+
       if (daysFromNow < 7) {
         console.log('Heads up, Crystal Palace are playing this week!')
+        console.log('------------------------------------------------------------')
       }
       
-      if (daysFromNow < 7 && venue === 'Selhurst Park ') {
-        console.log('FFS, Crystal Palace are playing at home this week. Sainsburys will be closed!');
-        sendAlertEmail('FFS, Crystal Palace are playing at home this week. Sainsburys will be closed!');
+      if (daysFromNow < 7 && venue === 'Selhurst Park') {
+        console.log(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
+        console.log('------------------------------------------------------------')
+        sendAlertEmail(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`, 'Crystal Palace are playing at home this week!',);
       }
        
       if (daysFromNow < 7 && venue !== 'Selhurst Park') {
-        console.log('Crystal Palace are playing away this week, so Sainsburys should be open.')
-        sendAlertEmail('Crystal Palace are playing away this week, so Sainsburys should be open.');
+        console.log(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`)
+        console.log('------------------------------------------------------------')
+        sendAlertEmail(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`, 'Crystal Palace are playing away this week!');
       }
       
 
