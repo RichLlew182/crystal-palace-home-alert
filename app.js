@@ -2,9 +2,13 @@ import nodemailer from 'nodemailer'
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
 import twilio from 'twilio';
-import axios from 'axios'
+import axios from 'axios';
+import express from 'express'
 
-dotenv.config()
+dotenv.config();
+
+const app = express();
+const port = process.env.PORT || 3000;
 
 const gmailAppPassword = process.env.PASSWORD
 const accountSid = process.env.SID;
@@ -95,7 +99,7 @@ const fetchData = async function () {
 
     console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
 
-    // sendAlerts()
+    sendAlerts()
 
   } catch (error) {
     console.log('ERROR: ' + error)
@@ -129,3 +133,7 @@ const sendAlerts = async function () {
 
 
 fetchData()
+
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server is listening on port ${port}`);
+});
