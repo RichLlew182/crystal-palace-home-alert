@@ -99,7 +99,7 @@ const fetchData = async function () {
 
     console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
 
-    // sendAlerts()
+    sendAlerts()
 
   } catch (error) {
     console.log('ERROR: ' + error)
