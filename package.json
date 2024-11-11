@@ -4,7 +4,7 @@
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",
     "nodemailer": "^6.9.10",
-    "twilio": "^4.22.0"
+    "twilio": "^4.23.0"
   },
   "name": "crystal-palace-home-alert",
   "description": "A mini perosnal project for setting up alerts to let me know when Crystal Palace F.C are playing at home",

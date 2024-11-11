@@ -1,12 +1,18 @@
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
+import twilio from 'twilio'
 
 dayjs.locale('en');
 
 dotenv.config()
 
 const gmailAppPassword = process.env.PASSWORD
+const accountSid = process.env.SID;
+const authToken = process.env.TOKEN;
+
+
+const client = twilio(accountSid, authToken);
 
 let todaysDate = dayjs()
 // console.log(todaysDate)
@@ -19,6 +25,18 @@ const options = {
     'X-RapidAPI-Host': 'api-football-v1.p.rapidapi.com'
   }
 };
+
+function sendTextMessage(message) {
+
+  client.messages
+    .create({
+      body: message,
+      from: '+447453144896',
+      to: '+44 7538 820382'
+    })
+    .then(message => console.log(`Message sent with SID: ${message.sid}`))
+    .catch(error => console.error('Error sending message:', error));
+}
 
 // Function to send alert email
 function sendAlertEmail(message, subject) {
@@ -55,41 +73,37 @@ fetch(url, options)
   }).then(function (data) {
 
 
-    const crystalPalaceFixtures = data.response
+    const crystalPalaceFixtures = data.response[0]
 
-    for (let i = 0; i < crystalPalaceFixtures.length; i++) {
-      const venue = crystalPalaceFixtures[i].fixture.venue.name;
-      const homeTeam = crystalPalaceFixtures[i].teams.home.name;
-      const awayTeam = crystalPalaceFixtures[i].teams.away.name;
-      const league = crystalPalaceFixtures[i].league.name;
-      let fixtureDate = crystalPalaceFixtures[i].fixture.date;
-      fixtureDate = dayjs(fixtureDate).format('dddd DD MMMM YYYY')
-      let futureDate = dayjs(crystalPalaceFixtures[i].fixture.date);
-      let daysFromNow = futureDate.diff(todaysDate, 'day');
-      futureDate = futureDate.format('DD/MM/YY')
+    console.log(crystalPalaceFixtures)
 
-      // console.log('------------------------------------------------------------')
-
-      if (daysFromNow < 20) {
-        console.log('Heads up, Crystal Palace are playing this week!')
-        console.log('------------------------------------------------------------')
-      }
-
-      if (daysFromNow < 20 && venue === 'Selhurst Park') {
-        console.log(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
-        console.log('------------------------------------------------------------')
-        sendAlertEmail(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`, 'Crystal Palace are playing at home this week!',);
-      }
-
-      if (daysFromNow < 20 && venue !== 'Selhurst Park') {
-        console.log(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`)
-        console.log('------------------------------------------------------------')
-        sendAlertEmail(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`, 'Crystal Palace are playing away this week!');
-      }
+    const venue = crystalPalaceFixtures.fixture.venue.name;
+    const awayTeam = crystalPalaceFixtures.teams.away.name;
+    let fixtureDate = crystalPalaceFixtures.fixture.date;
+    fixtureDate = dayjs(fixtureDate).format('dddd DD MMMM YYYY')
+    let futureDate = dayjs(crystalPalaceFixtures.fixture.date);
+    let daysFromNow = futureDate.diff(todaysDate, 'day');
+    futureDate = futureDate.format('DD/MM/YY')
 
 
+    if (daysFromNow < 20) {
+      console.log('Heads up, Crystal Palace are playing this week!')
+      console.log('------------------------------------------------------------')
     }
 
+    if (daysFromNow < 20 && venue === 'Selhurst Park') {
+      console.log(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
+      console.log('------------------------------------------------------------')
+      sendAlertEmail(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`, 'Crystal Palace are playing at home this week!',);
+      sendTextMessage(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
+    }
+
+    if (daysFromNow < 20 && venue !== 'Selhurst Park') {
+      console.log(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`)
+      console.log('------------------------------------------------------------')
+      sendAlertEmail(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`, 'Crystal Palace are playing away this week!');
+      sendTextMessage(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`)
+    }
 
   })
   .catch(function (error) {
