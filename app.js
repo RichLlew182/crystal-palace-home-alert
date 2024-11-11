@@ -9,6 +9,9 @@ dotenv.config()
 const gmailAppPassword = process.env.PASSWORD
 const accountSid = process.env.SID;
 const authToken = process.env.TOKEN;
+const rapidApiKey = process.env.RAPIDAPIKEY;
+const rapidApiHost = process.env.RAPIDAPIHOST;
+
 
 // console.log(todaysDate)
 
@@ -55,17 +58,17 @@ function sendAlertEmail(message, subject) {
   });
 }
 
+dayjs.locale('en');
+let todaysDate = dayjs()
+
 const url = 'https://api-football-v1.p.rapidapi.com/v3/fixtures?team=52&next=50';
 const options = {
   method: 'GET',
   headers: {
-    'X-RapidAPI-Key': '0de7666b80mshc15c644e1ec3fe5p19f21bjsn186f44de2c74',
-    'X-RapidAPI-Host': 'api-football-v1.p.rapidapi.com'
+    'X-RapidAPI-Key': rapidApiKey,
+    'X-RapidAPI-Host': rapidApiHost,
   }
 };
-
-dayjs.locale('en');
-let todaysDate = dayjs()
 
 let venue = '';
 let awayTeam = '';
@@ -92,7 +95,7 @@ const fetchData = async function () {
 
     console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
 
-    sendAlerts()
+    // sendAlerts()
 
   } catch (error) {
     console.log('ERROR: ' + error)
