@@ -72,6 +72,7 @@ const options = {
 
 let venue = '';
 let awayTeam = '';
+let homeTeam = '';
 let fixtureDate = '';
 let daysFromNow = '';
 let futureDate = '';
@@ -86,6 +87,7 @@ const fetchData = async function () {
     // console.log(data);
 
     venue = data.fixture.venue.name;
+    homeTeam = data.teams.home.name;
     awayTeam = data.teams.away.name;
     fixtureDate = data.fixture.date;
     fixtureDate = dayjs(fixtureDate).format('dddd DD MMMM YYYY')
@@ -93,7 +95,7 @@ const fetchData = async function () {
     daysFromNow = futureDate.diff(todaysDate, 'day');
     futureDate = futureDate.format('DD/MM/YY');
 
-    console.log(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
+    console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
 
     sendAlerts()
 
@@ -111,17 +113,17 @@ const sendAlerts = async function () {
   }
 
   if (daysFromNow < 20 && venue === 'Selhurst Park') {
-    console.log(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
+    console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
     console.log('------------------------------------------------------------')
-    sendAlertEmail(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`, 'Crystal Palace are playing at home this week!',);
-    sendTextMessage(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
+    sendAlertEmail(`${homeTeam}are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`, 'Crystal Palace are playing at home this week!',);
+    sendTextMessage(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
   }
 
   if (daysFromNow < 20 && venue !== 'Selhurst Park') {
-    console.log(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`)
+    console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`)
     console.log('------------------------------------------------------------')
-    sendAlertEmail(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`, 'Crystal Palace are playing away this week!');
-    sendTextMessage(`Crystal Palace are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`)
+    sendAlertEmail(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`, 'Crystal Palace are playing away this week!');
+    sendTextMessage(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`)
   }
 
 
