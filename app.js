@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import twilio from 'twilio';
 import axios from 'axios';
 import express from 'express'
+import { CronJob } from 'cron'
 
 dotenv.config();
 
@@ -131,8 +132,14 @@ const sendAlerts = async function () {
 
 }
 
+// fetchData()
 
-fetchData()
+const job = new CronJob(
+  '0 9 * * 2', // cronTime
+  fetchData,// onTick
+  null, // onComplete
+  true, // start
+);
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server is listening on port ${port}`);
