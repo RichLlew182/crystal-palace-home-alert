@@ -4,21 +4,15 @@ import dayjs from 'dayjs';
 import twilio from 'twilio';
 import axios from 'axios'
 
-dayjs.locale('en');
-
 dotenv.config()
 
 const gmailAppPassword = process.env.PASSWORD
 const accountSid = process.env.SID;
 const authToken = process.env.TOKEN;
 
-
-const client = twilio(accountSid, authToken);
-
-let todaysDate = dayjs()
 // console.log(todaysDate)
 
-
+const client = twilio(accountSid, authToken);
 
 function sendTextMessage(message) {
 
@@ -70,6 +64,9 @@ const options = {
   }
 };
 
+dayjs.locale('en');
+let todaysDate = dayjs()
+
 let venue = '';
 let awayTeam = '';
 let homeTeam = '';
@@ -81,10 +78,8 @@ const fetchData = async function () {
 
   try {
     let res = await axios.get(url, options);
-    // console.log(response);
 
     const data = res.data.response[0];
-    // console.log(data);
 
     venue = data.fixture.venue.name;
     homeTeam = data.teams.home.name;
@@ -115,18 +110,19 @@ const sendAlerts = async function () {
   if (daysFromNow < 20 && venue === 'Selhurst Park') {
     console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
     console.log('------------------------------------------------------------')
-    sendAlertEmail(`${homeTeam}are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`, 'Crystal Palace are playing at home this week!',);
+    sendAlertEmail(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`, `${homeTeam} are playing at home this week!`,);
     sendTextMessage(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
   }
 
   if (daysFromNow < 20 && venue !== 'Selhurst Park') {
     console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`)
     console.log('------------------------------------------------------------')
-    sendAlertEmail(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`, 'Crystal Palace are playing away this week!');
+    sendAlertEmail(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`, `${awayTeam} are playing away this week!`);
     sendTextMessage(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`)
   }
 
 
 }
+
 
 fetchData()
