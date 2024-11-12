@@ -10,14 +10,14 @@ const app = express();
 
 dotenv.config();
 const port = process.env.PORT || 3000;
-const gmailAppPassword = process.env.PASSWORD;
-const accountSid = process.env.SID;
-const authToken = process.env.TOKEN;
-const rapidApiKey = process.env.RAPIDAPIKEY;
-const rapidApiHost = process.env.RAPIDAPIHOST;
-const number1 = process.env.NUMBER1;
-const number2 = process.env.NUMBER2;
-const myEmail = process.env.MYEMAIL;
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const number1 = process.env.TWILIO_NUMBER1;
+const number2 = process.env.TWILIO_NUMBER2;
+const rapidApiKey = process.env.RAPIDAPI_KEY;
+const rapidApiHost = process.env.RAPIDAPI_HOST;
+const myEmail = process.env.MY_EMAIL;
+const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
 
 const client = twilio(accountSid, authToken);
 
@@ -78,6 +78,7 @@ const options = {
 };
 
 let venue = '';
+let time = ''
 let awayTeam = '';
 let homeTeam = '';
 let fixtureDateFormatted = '';
@@ -92,6 +93,7 @@ const fetchData = async function () {
     const data = res.data.response[0];
 
     venue = data.fixture.venue.name;
+    time = dayjs(data.fixture.date).format('HH:mm');
     homeTeam = data.teams.home.name;
     awayTeam = data.teams.away.name;
     fixtureDateFormatted = dayjs(data.fixture.date).format('dddd DD MMMM YYYY')
@@ -111,18 +113,18 @@ const sendAlerts = async function () {
 
   if (daysFromNow >= 0 && daysFromNow <= 4 && venue === 'Selhurst Park') {
     console.log('------------------------------------------------------------')
-    console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted}. Sainsburys will be closed!`);
+    console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted} at ${time}. Sainsburys will be closed!`);
     console.log('------------------------------------------------------------')
-    sendAlertEmail(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted}. Sainsburys will be closed!`, `${homeTeam} are playing at home this week!`,);
-    sendTextMessage(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted}. Sainsburys will be closed!`);
+    sendAlertEmail(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted} at ${time}. Sainsburys will be closed!`, `${homeTeam} are playing at home this week!`,);
+    sendTextMessage(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted}at ${time}. Sainsburys will be closed!`);
   }
 
   if (daysFromNow >= 0 && daysFromNow <= 4 && venue !== 'Selhurst Park') {
     console.log('------------------------------------------------------------')
-    console.log(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted}, so Sainsburys should be open.`)
+    console.log(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`)
     console.log('------------------------------------------------------------')
-    sendAlertEmail(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted}, so Sainsburys should be open.`, `${awayTeam} are playing away this week!`);
-    sendTextMessage(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted}, so Sainsburys should be open.`)
+    sendAlertEmail(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`, `${awayTeam} are playing away this week!`);
+    sendTextMessage(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`)
   }
 
   else {
