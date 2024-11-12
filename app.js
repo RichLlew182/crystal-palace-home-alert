@@ -109,7 +109,7 @@ const fetchData = async function () {
 
 const sendAlerts = async function () {
 
-  if (daysFromNow >= 0 && daysFromNow <= 20 && venue === 'Selhurst Park') {
+  if (daysFromNow >= 0 && daysFromNow <= 4 && venue === 'Selhurst Park') {
     console.log('------------------------------------------------------------')
     console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted}. Sainsburys will be closed!`);
     console.log('------------------------------------------------------------')
@@ -117,7 +117,7 @@ const sendAlerts = async function () {
     sendTextMessage(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted}. Sainsburys will be closed!`);
   }
 
-  if (daysFromNow >= 0 && daysFromNow <= 20 && venue !== 'Selhurst Park') {
+  if (daysFromNow >= 0 && daysFromNow <= 4 && venue !== 'Selhurst Park') {
     console.log('------------------------------------------------------------')
     console.log(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted}, so Sainsburys should be open.`)
     console.log('------------------------------------------------------------')
