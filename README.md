@@ -1,26 +1,9 @@
 # crystal-palace-home-alert
-A mini personal project for setting up alerts to let me know when Crystal Palace F.C are playing at home.
+This is a mini project I created to alert me whenever Crystal Palace F.C. has a home game coming up.
 
-## Getting Started Locally
+Living close to Selhurst Park has its drawbacks on match days: traveling fans often take local parking spots, and the nearby Sainsbury’s usually closes due to the stadium’s proximity. I’ve had several instances where I’ve driven to do my weekly shop, only to find Sainsbury’s closed, and then struggled to find parking when I got back home.
 
-To clone and run the app locally, follow these steps:
-
-1. **Clone the Repository**:
-
-2. **Install Dependencies**:
-   Make sure you have Node.js installed. Then, run the following command to install all necessary packages:
-   ```bash
-   npm install
-   ```
-
-3. **Run the Application**:
-   Start the app with the following command:
-   ```bash
-   node app.js
-   ```
-
-4. **Access the App**:
-   Open your web browser and navigate to `http://localhost:3000`
+To avoid these inconveniences, I set up an alert system that checks for any matches in the upcoming week and notifies me if they’re at home. The alerts, which are sent via email and SMS, also indicate whether Sainsbury’s will be open. I used Nodemailer for email notifications and Twilio for SMS alerts, while scheduling is handled by the Cron package, with alerts set for Mondays and Fridays at 9 a.m. to cover both weekday and weekend matches.
 
 ## Dependencies
 
