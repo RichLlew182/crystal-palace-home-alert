@@ -3,68 +3,70 @@ import dotenv from 'dotenv';
 import dayjs from 'dayjs';
 import twilio from 'twilio';
 import axios from 'axios';
-import express from 'express'
-import { CronJob } from 'cron'
-
-dotenv.config();
+import express from 'express';
+import { CronJob } from 'cron';
 
 const app = express();
-const port = process.env.PORT || 3000;
 
-const gmailAppPassword = process.env.PASSWORD
+dotenv.config();
+const port = process.env.PORT || 3000;
+const gmailAppPassword = process.env.PASSWORD;
 const accountSid = process.env.SID;
 const authToken = process.env.TOKEN;
 const rapidApiKey = process.env.RAPIDAPIKEY;
 const rapidApiHost = process.env.RAPIDAPIHOST;
-
-
-// console.log(todaysDate)
+const number1 = process.env.NUMBER1;
+const number2 = process.env.NUMBER2;
+const myEmail = process.env.MYEMAIL;
 
 const client = twilio(accountSid, authToken);
 
+const numbers = [number1, number2];
+
 function sendTextMessage(message) {
 
-  client.messages
-    .create({
-      body: message,
-      from: '+447453144896',
-      to: '+44 7538 820382'
-    })
-    .then(message => console.log(`Message sent with SID: ${message.sid}`))
-    .catch(error => console.error('Error sending message:', error));
+  numbers.forEach((number) => {
+
+    client.messages
+      .create({
+        body: message,
+        from: '+447453144896',
+        to: number
+      })
+      .then(message => console.log(`Message sent to ${number} with SID: ${message.sid}`))
+      .catch(error => console.error('Error sending message:', error));
+
+  })
+
 }
 
-// Function to send alert email
 function sendAlertEmail(message, subject) {
-  // Create a SMTP transporter
+
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'crystalpalace.alerts@gmail.com', // Your email address
-      pass: gmailAppPassword// Your password
+      user: 'crystalpalace.alerts@gmail.com',
+      pass: gmailAppPassword
     }
   });
 
-  // Setup email data
   let mailOptions = {
     from: 'CP Alerts <crystalpalace.alerts@gmail.com>',
-    to: 'richard.lee.llewellyn@gmail.com',
+    to: myEmail,
     subject: subject,
     text: message
   };
 
-  // Send email
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       return console.log('Error occurred while sending email:', error);
     }
     console.log('Email sent:', info.response);
-    console.log('------------------------------------------------------------')
   });
 }
 
 dayjs.locale('en');
-let todaysDate = dayjs()
+let todaysDate = dayjs().startOf('day');
 
 const url = 'https://api-football-v1.p.rapidapi.com/v3/fixtures?team=52&next=50';
 const options = {
@@ -78,7 +80,7 @@ const options = {
 let venue = '';
 let awayTeam = '';
 let homeTeam = '';
-let fixtureDate = '';
+let fixtureDateFormatted = '';
 let daysFromNow = '';
 let futureDate = '';
 
@@ -92,13 +94,10 @@ const fetchData = async function () {
     venue = data.fixture.venue.name;
     homeTeam = data.teams.home.name;
     awayTeam = data.teams.away.name;
-    fixtureDate = data.fixture.date;
-    fixtureDate = dayjs(fixtureDate).format('dddd DD MMMM YYYY')
-    futureDate = dayjs(data.fixture.date);
+    fixtureDateFormatted = dayjs(data.fixture.date).format('dddd DD MMMM YYYY')
+    futureDate = dayjs(data.fixture.date).startOf('day');
     daysFromNow = futureDate.diff(todaysDate, 'day');
     futureDate = futureDate.format('DD/MM/YY');
-
-    console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
 
     sendAlerts()
 
@@ -110,35 +109,37 @@ const fetchData = async function () {
 
 const sendAlerts = async function () {
 
-  if (daysFromNow < 20) {
-    console.log('Heads up, Crystal Palace are playing this week!')
+  if (daysFromNow >= 0 && daysFromNow <= 20 && venue === 'Selhurst Park') {
     console.log('------------------------------------------------------------')
+    console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted}. Sainsburys will be closed!`);
+    console.log('------------------------------------------------------------')
+    sendAlertEmail(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted}. Sainsburys will be closed!`, `${homeTeam} are playing at home this week!`,);
+    sendTextMessage(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted}. Sainsburys will be closed!`);
   }
 
-  if (daysFromNow < 20 && venue === 'Selhurst Park') {
-    console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
+  if (daysFromNow >= 0 && daysFromNow <= 20 && venue !== 'Selhurst Park') {
     console.log('------------------------------------------------------------')
-    sendAlertEmail(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`, `${homeTeam} are playing at home this week!`,);
-    sendTextMessage(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}. Sainsburys will be closed!`);
+    console.log(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted}, so Sainsburys should be open.`)
+    console.log('------------------------------------------------------------')
+    sendAlertEmail(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted}, so Sainsburys should be open.`, `${awayTeam} are playing away this week!`);
+    sendTextMessage(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted}, so Sainsburys should be open.`)
   }
 
-  if (daysFromNow < 20 && venue !== 'Selhurst Park') {
-    console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`)
+  else {
     console.log('------------------------------------------------------------')
-    sendAlertEmail(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`, `${awayTeam} are playing away this week!`);
-    sendTextMessage(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDate}, so Sainsburys should be open.`)
+    console.log('No matches are scheduled this week.');
+    console.log('------------------------------------------------------------')
   }
-
 
 }
 
 // fetchData()
 
 const job = new CronJob(
-  '0 9 * * 2', // cronTime
-  fetchData,// onTick
-  null, // onComplete
-  true, // start
+  '0 9 * * 1,5',
+  fetchData,
+  null,
+  true,
 );
 
 app.listen(port, '0.0.0.0', () => {
