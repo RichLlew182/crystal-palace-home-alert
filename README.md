@@ -1,4 +1,4 @@
-# crystal-palace-home-alert
+# Crystal Palace at Home Alerts
 This is a mini project I created to alert me whenever Crystal Palace F.C. has a home game coming up.
 
 Living close to Selhurst Park has its drawbacks on match days: traveling fans often take local parking spots, and the nearby Sainsbury’s usually closes due to the stadium’s proximity. I’ve had several instances where I’ve driven to do my weekly shop, only to find Sainsbury’s closed, and then struggled to find parking when I got back home.
