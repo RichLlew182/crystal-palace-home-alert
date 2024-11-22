@@ -124,7 +124,7 @@ const sendAlerts = async function () {
     console.log(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`)
     console.log('------------------------------------------------------------')
     sendAlertEmail(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`, `${awayTeam} are playing away this week!`);
-    sendTextMessage(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`)
+    // sendTextMessage(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`)
   }
 
   else {
@@ -135,14 +135,14 @@ const sendAlerts = async function () {
 
 }
 
-// fetchData()
+ fetchData()
 
-const job = new CronJob(
-  '0 9 * * 1,5',
-  fetchData,
-  null,
-  true,
-);
+// const job = new CronJob(
+//   '0 9 * * 1,5',
+//   fetchData,
+//   null,
+//   true,
+// );
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server is listening on port ${port}`);
