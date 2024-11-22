@@ -135,14 +135,14 @@ const sendAlerts = async function () {
 
 }
 
- fetchData()
+ //fetchData()
 
-// const job = new CronJob(
-//   '0 9 * * 1,5',
-//   fetchData,
-//   null,
-//   true,
-// );
+const job = new CronJob(
+  '0 9 * * 1,5',
+  fetchData,
+  null,
+  true,
+);
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server is listening on port ${port}`);
