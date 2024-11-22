@@ -124,7 +124,7 @@ const sendAlerts = async function () {
     console.log(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`)
     console.log('------------------------------------------------------------')
     sendAlertEmail(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`, `${awayTeam} are playing away this week!`);
-    // sendTextMessage(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`)
+    sendTextMessage(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`)
   }
 
   else {
