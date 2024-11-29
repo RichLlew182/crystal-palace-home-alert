@@ -68,7 +68,7 @@ function sendAlertEmail(message, subject) {
 dayjs.locale('en');
 let todaysDate = dayjs().startOf('day');
 
-const url = 'https://api-football-v1.p.rapidapi.com/v3/fixtures?team=52&next=50';
+const url = 'https://api-football-v1.p.rapidapi.com/v3/fixtures?team=52&next=5';
 const options = {
   method: 'GET',
   headers: {
@@ -90,6 +90,8 @@ const fetchData = async function () {
   try {
     let res = await axios.get(url, options);
 
+    console.log('API response:', res.data);
+
     const data = res.data.response[0];
 
     venue = data.fixture.venue.name;
@@ -101,10 +103,15 @@ const fetchData = async function () {
     daysFromNow = futureDate.diff(todaysDate, 'day');
     futureDate = futureDate.format('DD/MM/YY');
 
+    console.log({ daysFromNow, venue, futureDate, todaysDate });
+    console.log('Days from now:', daysFromNow);
+    console.log('Today:', todaysDate.format());
+    console.log('Future date:', futureDate);
+
     sendAlerts()
 
   } catch (error) {
-    console.log('ERROR: ' + error)
+    console.error('Error fetching data:', error.response?.data || error.message);
   }
 
 }
@@ -115,14 +122,17 @@ const sendAlerts = async function () {
     console.log('------------------------------------------------------------')
     console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted} at ${time}. Sainsburys will be closed!`);
     console.log('------------------------------------------------------------')
+
     sendAlertEmail(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted} at ${time}. Sainsburys will be closed!`, `${homeTeam} are playing at home this week!`,);
     sendTextMessage(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted}at ${time}. Sainsburys will be closed!`);
   }
 
-  if (daysFromNow >= 0 && daysFromNow <= 4 && venue !== 'Selhurst Park') {
+  else if (daysFromNow >= 0 && daysFromNow <= 4 && venue !== 'Selhurst Park') {
+
     console.log('------------------------------------------------------------')
     console.log(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`)
     console.log('------------------------------------------------------------')
+
     sendAlertEmail(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`, `${awayTeam} are playing away this week!`);
     sendTextMessage(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`)
   }
@@ -135,14 +145,14 @@ const sendAlerts = async function () {
 
 }
 
- fetchData()
+// fetchData()
 
-// const job = new CronJob(
-//   '0 9 * * 1,5',
-//   fetchData,
-//   null,
-//   true,
-// );
+const job = new CronJob(
+  '0 11 * * 1,5',
+  fetchData,
+  null,
+  true,
+);
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server is listening on port ${port}`);
