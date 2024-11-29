@@ -90,7 +90,7 @@ const fetchData = async function () {
   try {
     let res = await axios.get(url, options);
 
-    console.log('API response:', res.data);
+    // console.log('API response:', res.data);
 
     const data = res.data.response[0];
 
@@ -103,10 +103,10 @@ const fetchData = async function () {
     daysFromNow = futureDate.diff(todaysDate, 'day');
     futureDate = futureDate.format('DD/MM/YY');
 
-    console.log({ daysFromNow, venue, futureDate, todaysDate });
-    console.log('Days from now:', daysFromNow);
-    console.log('Today:', todaysDate.format());
-    console.log('Future date:', futureDate);
+    // console.log({ daysFromNow, venue, futureDate, todaysDate });
+    // console.log('Days from now:', daysFromNow);
+    // console.log('Today:', todaysDate.format());
+    // console.log('Future date:', futureDate);
 
     sendAlerts()
 
