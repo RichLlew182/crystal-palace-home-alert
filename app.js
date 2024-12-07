@@ -88,6 +88,7 @@ let futureDate = '';
 const fetchData = async function () {
 
   try {
+
     let res = await axios.get(url, options);
 
     // console.log('API response:', res.data);
@@ -103,10 +104,12 @@ const fetchData = async function () {
     daysFromNow = futureDate.diff(todaysDate, 'day');
     futureDate = futureDate.format('DD/MM/YY');
 
-    // console.log({ daysFromNow, venue, futureDate, todaysDate });
-    // console.log('Days from now:', daysFromNow);
-    // console.log('Today:', todaysDate.format());
-    // console.log('Future date:', futureDate);
+    console.log({ daysFromNow, venue, futureDate });
+    console.log('Test log: Days from now:', daysFromNow);
+    console.log('Test log: Today:', todaysDate.format('DD/MM/YY'));
+    console.log('Test log: Future date:', futureDate);
+
+    console.log(`Test log: ${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted} at ${time}.`)
 
     sendAlerts()
 
@@ -118,30 +121,42 @@ const fetchData = async function () {
 
 const sendAlerts = async function () {
 
-  if (daysFromNow >= 0 && daysFromNow <= 4 && venue === 'Selhurst Park') {
-    console.log('------------------------------------------------------------')
-    console.log(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted} at ${time}. Sainsburys will be closed!`);
-    console.log('------------------------------------------------------------')
+  if (daysFromNow >= 0 && daysFromNow <= 4) {
 
-    sendAlertEmail(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted} at ${time}. Sainsburys will be closed!`, `${homeTeam} are playing at home this week!`,);
-    sendTextMessage(`${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted}at ${time}. Sainsburys will be closed!`);
-  }
+    if (venue === 'Selhurst Park') {
+      const message = `${homeTeam} are playing ${awayTeam} at ${venue} on ${fixtureDateFormatted} at ${time}. Sainsbury's will be closed!`;
+      console.log('------------------------------------------------------------');
+      console.log(message);
+      console.log('------------------------------------------------------------');
 
-  else if (daysFromNow >= 0 && daysFromNow <= 4 && venue !== 'Selhurst Park') {
+      sendAlertEmail(message, `${homeTeam} are playing at home this week!`);
+      sendTextMessage(message);
 
-    console.log('------------------------------------------------------------')
-    console.log(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`)
-    console.log('------------------------------------------------------------')
+    } else if (venue) {
 
-    sendAlertEmail(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`, `${awayTeam} are playing away this week!`);
-    sendTextMessage(`${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsburys should be open.`)
-  }
+      const message = `${awayTeam} are playing ${homeTeam} at ${venue} on ${fixtureDateFormatted} at ${time}, so Sainsbury's should be open.`;
+      console.log('------------------------------------------------------------');
+      console.log(message);
+      console.log('------------------------------------------------------------');
 
-  else {
-    console.log('------------------------------------------------------------')
+      sendAlertEmail(message, `${awayTeam} are playing away this week!`);
+      sendTextMessage(message);
+
+    } else {
+
+      console.log('------------------------------------------------------------');
+      console.log('Venue information is missing or invalid.');
+      console.log('------------------------------------------------------------');
+    }
+
+  } else {
+
+    console.log('------------------------------------------------------------');
     console.log('No matches are scheduled this week.');
-    console.log('------------------------------------------------------------')
+    console.log('------------------------------------------------------------');
+
   }
+
 
 }
 
