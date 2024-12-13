@@ -6,6 +6,8 @@ import axios from 'axios';
 import express from 'express';
 import { CronJob } from 'cron';
 
+dayjs.locale('en');
+
 const app = express();
 
 dotenv.config();
@@ -65,8 +67,7 @@ function sendAlertEmail(message, subject) {
   });
 }
 
-dayjs.locale('en');
-let todaysDate = dayjs().startOf('day');
+
 
 const url = 'https://api-football-v1.p.rapidapi.com/v3/fixtures?team=52&next=5';
 const options = {
@@ -95,6 +96,7 @@ const fetchData = async function () {
 
     const data = res.data.response[0];
 
+    let todaysDate = dayjs().startOf('day');
     venue = data.fixture.venue.name;
     time = dayjs(data.fixture.date).format('HH:mm');
     homeTeam = data.teams.home.name;
@@ -156,7 +158,6 @@ const sendAlerts = async function () {
     console.log('------------------------------------------------------------');
 
   }
-
 
 }
 
