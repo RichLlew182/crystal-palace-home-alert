@@ -10,7 +10,7 @@ dayjs.extend(timezone);
 
 const PALACE_ID = 52;
 const TZ = 'Europe/London';
-const DAYS_AHEAD = 4;
+const RUN_DAYS = [1, 5]; // Monday and Friday; keep in step with the cron line in alerts.yml
 const SENDER = 'crystalpalace.alerts@gmail.com';
 
 const { RAPIDAPI_KEY, RAPIDAPI_HOST, MY_EMAIL, GMAIL_APP_PASSWORD } = process.env;
@@ -27,6 +27,13 @@ const transporter = nodemailer.createTransport({
   connectionTimeout: 10000,
   greetingTimeout: 10000,
 });
+
+// How many days until the next scheduled run (e.g. Monday → 4, Friday → 3)
+function daysUntilNextRun(today) {
+  for (let d = 1; d <= 7; d++) {
+    if (RUN_DAYS.includes(today.add(d, 'day').day())) return d;
+  }
+}
 
 async function getUpcomingFixtures() {
   const { data } = await axios.get(`https://${RAPIDAPI_HOST}/v3/fixtures`, {
@@ -57,14 +64,15 @@ function buildAlert(fixture) {
 
 async function main() {
   const today = dayjs().tz(TZ).startOf('day');
+  const lastDay = daysUntilNextRun(today);
 
   const fixtures = (await getUpcomingFixtures()).filter((f) => {
     const daysAway = dayjs(f.fixture.date).tz(TZ).startOf('day').diff(today, 'day');
-    return daysAway >= 0 && daysAway <= DAYS_AHEAD;
+    return daysAway >= 1 && daysAway <= lastDay;
   });
 
   if (fixtures.length === 0) {
-    console.log(`No matches in the next ${DAYS_AHEAD} days.`);
+    console.log(`No matches between ${today.add(1, 'day').format('ddd D MMM')} and ${today.add(lastDay, 'day').format('ddd D MMM')}.`);
     return;
   }
 
