@@ -25,22 +25,22 @@ const client = twilio(accountSid, authToken);
 
 const numbers = [number1, number2];
 
-function sendTextMessage(message) {
+// function sendTextMessage(message) {
 
-  numbers.forEach((number) => {
+//   numbers.forEach((number) => {
 
-    client.messages
-      .create({
-        body: message,
-        from: '+447453144896',
-        to: number
-      })
-      .then(message => console.log(`Message sent to ${number} with SID: ${message.sid}`))
-      .catch(error => console.error('Error sending message:', error));
+//     client.messages
+//       .create({
+//         body: message,
+//         from: '+447453144896',
+//         to: number
+//       })
+//       .then(message => console.log(`Message sent to ${number} with SID: ${message.sid}`))
+//       .catch(error => console.error('Error sending message:', error));
 
-  })
+//   })
 
-}
+// }
 
 function sendAlertEmail(message, subject) {
 
@@ -66,8 +66,6 @@ function sendAlertEmail(message, subject) {
     console.log('Email sent:', info.response);
   });
 }
-
-
 
 const url = 'https://api-football-v1.p.rapidapi.com/v3/fixtures?team=52&next=5';
 const options = {
@@ -142,7 +140,7 @@ const sendAlerts = async function () {
       console.log('------------------------------------------------------------');
 
       sendAlertEmail(message, `${awayTeam} are playing away this week!`);
-      sendTextMessage(message);
+      // sendTextMessage(message);
 
     } else {
 
