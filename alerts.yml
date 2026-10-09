@@ -1,0 +1,27 @@
+name: CP Alerts
+
+on:
+  schedule:
+    - cron: '0 10 * * 1,5'   # 10:00 UTC = 11:00 UK summer time (10:00 in winter)
+  workflow_dispatch:          # adds a "Run workflow" button for testing
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: node index.js    # change if your script has a different filename
+        env:
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          MY_EMAIL: ${{ secrets.MY_EMAIL }}
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+          RAPIDAPI_HOST: ${{ secrets.RAPIDAPI_HOST }}
