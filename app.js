@@ -44,13 +44,22 @@ const numbers = [number1, number2];
 
 function sendAlertEmail(message, subject) {
 
-  let transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'crystalpalace.alerts@gmail.com',
-      pass: gmailAppPassword
-    }
-  });
+  // let transporter = nodemailer.createTransport({
+  //   service: 'gmail',
+  //   auth: {
+  //     user: 'crystalpalace.alerts@gmail.com',
+  //     pass: gmailAppPassword
+  //   }
+  // });
+
+  const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  auth: { user: 'crystalpalace.alerts@gmail.com', pass: gmailAppPassword },
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+});
 
   let mailOptions = {
     from: 'CP Alerts <crystalpalace.alerts@gmail.com>',
