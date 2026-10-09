@@ -130,7 +130,7 @@ const sendAlerts = async function () {
       console.log('------------------------------------------------------------');
 
       sendAlertEmail(message, `${homeTeam} are playing at home this week!`);
-      sendTextMessage(message);
+      //sendTextMessage(message);
 
     } else if (venue) {
 
