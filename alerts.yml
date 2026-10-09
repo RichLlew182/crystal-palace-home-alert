@@ -19,7 +19,7 @@ jobs:
 
       - run: npm ci
 
-      - run: node index.js    # change if your script has a different filename
+      - run: node app.js
         env:
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           MY_EMAIL: ${{ secrets.MY_EMAIL }}
