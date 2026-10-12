@@ -2,7 +2,7 @@ name: CP Alerts
 
 on:
   schedule:
-    - cron: '0 10 * * 1,5'   # 10:00 UTC = 11:00 UK summer time (10:00 in winter)
+    - cron: '37 9 * * 1,5'   # 09:37 UTC = 10:37 UK summer time (09:37 in winter); off the hour to avoid GitHub dropping runs
   workflow_dispatch:          # adds a "Run workflow" button for testing
 
 jobs:
